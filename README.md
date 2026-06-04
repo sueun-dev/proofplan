@@ -2,6 +2,8 @@
 
 ### Pick the path. Prove it. Start today.
 
+> **▶ Live demo — [sueun-dev.github.io/proofplan](https://sueun-dev.github.io/proofplan/)** · runs 100% in your browser, no install, no account.
+
 **ProofPlan is a glass-box decision engine for students.** When five things all feel urgent, it tells you which one to start — and prints the proof. You compare your real options on evidence, it classifies the choice as a **two-way door** (decide fast) or a **one-way door** (slow down), and you leave with a **Decision Receipt**: the chosen path, the first move for today, and an if-then fallback for the one thing most likely to break it.
 
 No account. No cloud. No black-box AI — every number is visible and editable.
