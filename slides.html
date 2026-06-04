@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ProofPlan — slide demo (for screen recording)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --paper:#f3efe6; --paper2:#efe9dd; --card:#fffefb; --ink:#17150f; --ink2:#423d33; --muted:#7a7264; --faint:#a59c8b;
+        --indigo:#2f2ad8; --indigo-ink:#1f1aa8; --coral:#ed4f1c; --green:#137a4f; --amber:#b8721a; --line:rgba(23,21,15,0.13);
+        --fd:"Fraunces",Georgia,serif; --fu:"Inter",system-ui,sans-serif; --fm:"IBM Plex Mono",ui-monospace,monospace;
+      }
+      *{box-sizing:border-box;}
+      html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:var(--fu);color:var(--ink);}
+      /* fixed 1280x720 stage, centered */
+      .stage{position:fixed;inset:0;display:grid;place-items:center;background:#0d0c0a;}
+      .deck{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--paper);
+        background-image:radial-gradient(120% 80% at 100% -10%,rgba(47,42,216,0.06),transparent 60%),
+          radial-gradient(90% 70% at -10% 0%,rgba(237,79,28,0.05),transparent 55%),
+          repeating-linear-gradient(0deg,transparent 0 31px,rgba(23,21,15,0.05) 31px 32px);}
+
+      .brandmark{position:absolute;top:34px;left:48px;z-index:6;display:flex;align-items:center;gap:10px;font-family:var(--fd);font-weight:600;font-size:20px;letter-spacing:-0.02em;}
+      .brandmark .m{color:var(--indigo);}
+      .brandmark small{font-family:var(--fm);font-weight:500;font-size:9px;letter-spacing:0.3em;color:var(--muted);display:block;line-height:1;margin-top:2px;}
+
+      .slide{position:absolute;inset:0;padding:96px 72px 104px;opacity:0;transition:opacity .55s ease, transform .55s ease;transform:scale(1.012);pointer-events:none;}
+      .slide.active{opacity:1;transform:scale(1);}
+
+      .kick{font-family:var(--fm);font-size:13px;letter-spacing:0.22em;text-transform:uppercase;color:var(--indigo-ink);margin:0 0 18px;}
+      h1{font-family:var(--fd);font-weight:600;letter-spacing:-0.03em;line-height:1.03;margin:0;color:var(--ink);}
+      h2{font-family:var(--fd);font-weight:600;letter-spacing:-0.025em;line-height:1.05;margin:0;color:var(--ink);font-size:44px;}
+      h1 em,h2 em{font-style:italic;color:var(--indigo);}
+      .sub{margin-top:22px;font-size:24px;line-height:1.5;color:var(--ink2);max-width:30ch;}
+
+      /* layouts */
+      .center{display:flex;flex-direction:column;justify-content:center;height:100%;}
+      .center h1{font-size:96px;max-width:15ch;}
+      .split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;height:100%;}
+      .split.wide-img{grid-template-columns:0.82fr 1.18fr;}
+      .stack{display:flex;flex-direction:column;height:100%;}
+      .stack h2{margin-bottom:26px;}
+
+      .frame{border-radius:16px;background:var(--card);border:1px solid var(--line);
+        box-shadow:0 30px 60px -28px rgba(23,21,15,0.5);overflow:hidden;}
+      .frame img{display:block;width:100%;height:auto;}
+      .img-tall{max-height:520px;width:auto;margin:0 auto;}
+      .frame.tall{display:inline-block;}
+      .frame.tall img{height:520px;width:auto;}
+
+      .bullets{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:14px;}
+      .bullets li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;font-size:21px;color:var(--ink2);line-height:1.35;}
+      .bullets li b{color:var(--ink);font-weight:600;}
+      .tick{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--indigo);color:#fff;font-size:14px;font-weight:700;font-family:var(--fm);}
+
+      .note{margin-top:22px;display:inline-flex;align-items:center;gap:10px;font-family:var(--fm);font-size:15px;color:var(--coral);background:rgba(237,79,28,0.1);border:1px solid rgba(237,79,28,0.25);border-radius:10px;padding:9px 14px;}
+      .note.green{color:var(--green);background:rgba(19,122,79,0.1);border-color:rgba(19,122,79,0.25);}
+
+      .stat{font-family:var(--fd);font-weight:600;letter-spacing:-0.02em;color:var(--green);font-size:64px;line-height:1;}
+      .stat small{display:block;font-family:var(--fu);font-weight:500;font-size:18px;color:var(--muted);margin-top:8px;letter-spacing:0;}
+
+      .wide-hero{margin-top:6px;display:grid;place-items:center;flex:1;}
+      .wide-hero .frame{max-width:1090px;}
+
+      .outwrap{display:flex;flex-direction:column;justify-content:center;height:100%;}
+      .outwrap .foot{margin-top:34px;font-family:var(--fm);font-size:16px;color:var(--muted);letter-spacing:0.04em;line-height:1.7;}
+      .outwrap .foot b{color:var(--ink);}
+
+      /* caption / subtitle bar */
+      .capbar{position:absolute;left:0;right:0;bottom:0;z-index:7;min-height:72px;display:flex;align-items:center;gap:18px;
+        padding:0 48px;background:var(--ink);color:var(--paper);}
+      .capbar .dot{font-family:var(--fm);font-size:12px;letter-spacing:0.14em;color:#d8b24a;flex:none;}
+      .capbar .cap{font-size:22px;font-weight:500;line-height:1.25;}
+      .capbar .cap b{color:#ffd9a8;}
+      .capbar .cap .go{color:#7fe3b0;} .capbar .cap .warn{color:#ffb27f;}
+      .prog{position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--indigo);}
+
+      .controls{position:absolute;top:28px;right:36px;z-index:8;display:flex;gap:8px;}
+      .controls button{font-family:var(--fu);font-weight:600;font-size:13px;color:var(--ink);background:rgba(255,255,255,0.9);border:1.5px solid rgba(23,21,15,0.18);border-radius:999px;padding:7px 14px;cursor:pointer;}
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="deck" id="deck">
+        <div class="brandmark"><span class="m">▣</span><span>ProofPlan<small>DECISION ENGINE</small></span></div>
+
+        <!-- 1 TITLE -->
+        <section class="slide active">
+          <div class="center">
+            <p class="kick">The glass-box decision engine</p>
+            <h1>Stop guessing which task to start. <em>Decide it. Prove it.</em></h1>
+            <p class="sub">A decision engine for students — pick one path when everything feels urgent, and walk away with proof.</p>
+          </div>
+        </section>
+
+        <!-- 2 OPTIONS -->
+        <section class="slide">
+          <div class="split">
+            <div>
+              <p class="kick">The moment</p>
+              <h2>Three urgent tasks.<br /><em>One</em> you can actually start.</h2>
+              <p class="sub">Compare your real options with evidence — not vibes.</p>
+            </div>
+            <div class="frame"><img src="./sld/options_student.png" alt="three options compared" /></div>
+          </div>
+        </section>
+
+        <!-- 3 MATRIX (all three visible) -->
+        <section class="slide">
+          <div class="stack">
+            <div>
+              <p class="kick">The glass box</p>
+              <h2>Ranked on evidence — <em>not a black box.</em></h2>
+            </div>
+            <div class="wide-hero"><div class="frame"><img src="./sld/proofgrid.png" alt="effort by payoff map and ranked paths" /></div></div>
+          </div>
+        </section>
+
+        <!-- 4 RECEIPT -->
+        <section class="slide">
+          <div class="split wide-img">
+            <div>
+              <p class="kick">The artifact</p>
+              <h2>It prints a <em>Decision Receipt.</em></h2>
+              <ul class="bullets">
+                <li><span class="tick">1</span><span><b>The path</b> to take — with a fit score</span></li>
+                <li><span class="tick">2</span><span><b>Why it wins</b>, in plain evidence</span></li>
+                <li><span class="tick">3</span><span><b>Your first move</b> for today</span></li>
+                <li><span class="tick">4</span><span><b>An if-then fallback</b> for the likeliest blocker</span></li>
+              </ul>
+            </div>
+            <div style="display:grid;place-items:center;"><div class="frame tall"><img src="./sld/receipt_reco.png" alt="recommended decision receipt" /></div></div>
+          </div>
+        </section>
+
+        <!-- 5 ONE-WAY DOOR -->
+        <section class="slide">
+          <div class="split">
+            <div>
+              <p class="kick">It reads the stakes</p>
+              <h2>Some choices are <em>one-way doors.</em></h2>
+              <p class="sub">Switching majors is hard to undo. ProofPlan flags reversibility before you commit.</p>
+              <span class="note">⚠ “Switch to CS now” · reversible 1 / 5 · hard to undo</span>
+            </div>
+            <div class="frame"><img src="./sld/options_major.png" alt="major switch options" /></div>
+          </div>
+        </section>
+
+        <!-- 6 VERIFY FIRST -->
+        <section class="slide">
+          <div class="split wide-img">
+            <div>
+              <p class="kick">It changes posture</p>
+              <h2>So it stamps the receipt: <em>verify first.</em></h2>
+              <p class="sub">For a reversible choice it says “decide fast.” For a one-way door, it tells you to slow down and prove it.</p>
+              <span class="note">Bezos one-way / two-way door test</span>
+            </div>
+            <div style="display:grid;place-items:center;"><div class="frame tall"><img src="./sld/receipt_verify.png" alt="verify first decision receipt" /></div></div>
+          </div>
+        </section>
+
+        <!-- 7 IF-THEN -->
+        <section class="slide">
+          <div class="split">
+            <div>
+              <p class="kick">The plan survives contact</p>
+              <h2>Every blocker becomes an <em>if-then plan.</em></h2>
+              <div class="stat">39% → 91%<small>follow-through with one if-then plan (Milne, Orbell &amp; Sheeran, 2002)</small></div>
+            </div>
+            <div class="frame"><img src="./sld/obstacles.png" alt="if-then fallback plans" /></div>
+          </div>
+        </section>
+
+        <!-- 8 OUTRO -->
+        <section class="slide">
+          <div class="outwrap">
+            <p class="kick">Decide. Prove it. Start today.</p>
+            <h1>One decision.<br />One <em>receipt.</em> One next move.</h1>
+            <p class="foot">Runs 100% in your browser — <b>no account, no cloud.</b><br />Transparent scoring you can see and challenge · github.com/&lt;you&gt;/proofplan</p>
+          </div>
+        </section>
+
+        <div class="controls">
+          <button id="replay" type="button">↻ Replay</button>
+        </div>
+        <div class="capbar">
+          <span class="dot" id="dot">01 / 08</span>
+          <span class="cap" id="cap">ProofPlan — the glass-box decision engine for students.</span>
+          <i class="prog" id="prog"></i>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const slides = [...document.querySelectorAll('.slide')];
+      const cap = document.getElementById('cap');
+      const dot = document.getElementById('dot');
+      const prog = document.getElementById('prog');
+      const CAPS = [
+        'ProofPlan is a glass-box decision engine for students.',
+        'Three urgent tasks, low energy, and a deadline closing in.',
+        'ProofPlan ranks your paths on evidence — transparent and editable. No black box.',
+        'It prints a Decision Receipt: the path, why it wins, and your first move today.',
+        'Switching majors? ProofPlan spots a <b>one-way door</b> — hard to undo.',
+        'So it changes posture and stamps the receipt: <span class="warn">verify first.</span>',
+        'Every blocker becomes an <b>if-then plan</b> — shown to nearly double follow-through.',
+        'ProofPlan. Decide. Prove it. Start today.',
+      ];
+      const DUR = [4.4, 5.76, 8.16, 7.52, 6.08, 7.2, 6.16, 4.16].map((d) => Math.round((d + 0.55) * 1000));
+      const N = slides.length;
+
+      function show(i, durMs) {
+        slides.forEach((s, k) => s.classList.toggle('active', k === i));
+        cap.innerHTML = CAPS[i] || '';
+        dot.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(N).padStart(2, '0');
+        prog.style.transition = 'none'; prog.style.width = '0%';
+        requestAnimationFrame(() => { prog.style.transition = 'width ' + (durMs || 3000) + 'ms linear'; prog.style.width = '100%'; });
+      }
+
+      // manual (capture) mode
+      const manual = new URLSearchParams(location.search).has('manual');
+      window.__demoSteps = N;
+      window.__demoGoto = function (i, durMs) {
+        clearTimeout(window.__t);
+        show(((i % N) + N) % N, durMs);
+      };
+
+      let idx = 0;
+      function run() { const d = DUR[idx]; show(idx, d); window.__t = setTimeout(() => { idx = (idx + 1) % N; run(); }, d); }
+
+      if (manual) {
+        document.querySelector('.controls').style.display = 'none';
+        window.__demoGoto(0, 3000);
+        window.__demoReady = true;
+      } else {
+        run();
+      }
+      document.getElementById('replay').addEventListener('click', () => { clearTimeout(window.__t); idx = 0; run(); });
+    </script>
+  </body>
+</html>

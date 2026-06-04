@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ProofPlan — guided demo (for screen recording)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --paper: #f3efe6; --ink: #17150f; --indigo: #2f2ad8; --coral: #ed4f1c; --green: #137a4f;
+        --font-display: "Fraunces", Georgia, serif; --font-ui: "Inter", system-ui, sans-serif; --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: var(--ink); font-family: var(--font-ui); overflow: hidden; }
+      .stage { position: fixed; inset: 0; display: flex; flex-direction: column; }
+
+      /* app frame */
+      .frame-wrap { position: relative; flex: 1; overflow: hidden; background: var(--paper); }
+      iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+      /* intro / outro cards */
+      .card {
+        position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column; justify-content: center;
+        padding: 0 8vw; background: var(--paper); opacity: 0; pointer-events: none; transition: opacity 0.6s ease;
+        background-image: radial-gradient(120% 80% at 100% -10%, rgba(47,42,216,0.07), transparent 60%), radial-gradient(90% 60% at -10% 0%, rgba(237,79,28,0.06), transparent 55%);
+      }
+      .card.show { opacity: 1; }
+      .card .kick { font-family: var(--font-mono); font-size: clamp(0.8rem, 1.4vw, 1rem); letter-spacing: 0.22em; text-transform: uppercase; color: var(--indigo); margin-bottom: 1.4rem; }
+      .card h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.4rem, 6vw, 5rem); line-height: 1.02; letter-spacing: -0.03em; color: var(--ink); margin: 0; max-width: 18ch; }
+      .card h1 em { color: var(--indigo); font-style: italic; }
+      .card p { margin-top: 1.6rem; font-size: clamp(1.1rem, 2vw, 1.6rem); color: #423d33; max-width: 40ch; line-height: 1.5; }
+      .card .mark { position: absolute; top: 6vh; left: 8vw; font-family: var(--font-display); font-weight: 600; font-size: 1.4rem; color: var(--ink); }
+      .card .mark span { color: var(--indigo); }
+      .card .foot { position: absolute; bottom: 7vh; left: 8vw; font-family: var(--font-mono); font-size: 0.9rem; letter-spacing: 0.1em; color: #7a7264; }
+
+      /* caption bar */
+      .caption {
+        position: relative; z-index: 20; display: flex; align-items: center; gap: 1.2rem;
+        padding: 1.1rem clamp(1.2rem, 4vw, 3rem); background: var(--ink); color: var(--paper); min-height: 84px;
+      }
+      .caption .step-dot { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.15em; color: #d8b24a; flex: none; }
+      .caption .cap-text { font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 500; line-height: 1.3; transition: opacity 0.3s ease; }
+      .caption .cap-text b { color: #ffd9a8; font-weight: 600; }
+      .caption .cap-text .go { color: #7fe3b0; } .caption .cap-text .warn { color: #ffb27f; }
+      .progress { position: absolute; left: 0; bottom: 0; height: 4px; background: var(--indigo); width: 0; transition: width 0.2s linear; }
+
+      /* controls */
+      .controls { position: absolute; top: 16px; right: 18px; z-index: 40; display: flex; gap: 8px; }
+      .controls button {
+        font-family: var(--font-ui); font-weight: 600; font-size: 0.82rem; color: var(--ink); background: rgba(255,255,255,0.9);
+        border: 1.5px solid rgba(23,21,15,0.18); border-radius: 999px; padding: 0.5em 1em; cursor: pointer; backdrop-filter: blur(6px);
+      }
+      .controls button:hover { background: #fff; border-color: var(--ink); }
+      .hint { position: absolute; top: 18px; left: 18px; z-index: 40; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.6); background: rgba(23,21,15,0.5); padding: 0.4em 0.8em; border-radius: 999px; }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="frame-wrap">
+        <iframe id="app" src="./index.html" title="ProofPlan app"></iframe>
+
+        <div class="hint">▶ Auto-playing demo · screen-record this frame</div>
+        <div class="controls">
+          <button id="btnReplay" type="button">↻ Replay</button>
+          <button id="btnPause" type="button">⏸ Pause</button>
+        </div>
+
+        <!-- intro -->
+        <section class="card" id="intro">
+          <span class="mark">▣ Proof<span>Plan</span></span>
+          <p class="kick">The glass-box decision engine</p>
+          <h1>Stop guessing which task to start. <em>Decide it. Prove it.</em></h1>
+          <p>When five things all feel urgent, ProofPlan tells you which one to start — and prints the proof.</p>
+          <span class="foot">Design4Future · a 60-second tour</span>
+        </section>
+
+        <!-- outro -->
+        <section class="card" id="outro">
+          <span class="mark">▣ Proof<span>Plan</span></span>
+          <p class="kick">Decide. Prove it. Start today.</p>
+          <h1>One decision. One <em>receipt</em>. One next move.</h1>
+          <p>Runs 100% in your browser — no account, no cloud. Transparent scoring you can see and challenge.</p>
+          <span class="foot">github.com/&lt;you&gt;/proofplan · live demo &amp; source</span>
+        </section>
+      </div>
+
+      <div class="caption">
+        <span class="step-dot" id="stepDot">00 / 08</span>
+        <span class="cap-text" id="capText">Loading ProofPlan…</span>
+        <span class="progress" id="progress"></span>
+      </div>
+    </div>
+
+    <script>
+      const app = document.getElementById('app');
+      const capText = document.getElementById('capText');
+      const stepDot = document.getElementById('stepDot');
+      const progress = document.getElementById('progress');
+      const intro = document.getElementById('intro');
+      const outro = document.getElementById('outro');
+      const btnReplay = document.getElementById('btnReplay');
+      const btnPause = document.getElementById('btnPause');
+
+      let win = null, doc = null, paused = false, timer = null, idx = 0;
+
+      function injectSpotStyle() {
+        try {
+          if (doc.getElementById('pp-spot-style')) return;
+          const s = doc.createElement('style');
+          s.id = 'pp-spot-style';
+          s.textContent = '.pp-spot{outline:3px solid #2f2ad8 !important;outline-offset:5px;border-radius:16px;box-shadow:0 0 0 9px rgba(47,42,216,0.12)!important;transition:outline-color .3s, box-shadow .3s;}';
+          doc.head.appendChild(s);
+        } catch (e) {}
+      }
+      function clearSpot() { try { doc.querySelectorAll('.pp-spot').forEach(e => e.classList.remove('pp-spot')); } catch (e) {} }
+      function spot(sel) {
+        clearSpot();
+        try { const el = doc.querySelector(sel); if (el) { el.classList.add('pp-spot'); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } } catch (e) {}
+      }
+      function scrollTop() { try { win.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }
+      function load(name) { try { win.ProofPlan.loadScenario(name); } catch (e) {} }
+
+      // caption may contain limited markup
+      const steps = [
+        { dur: 3200, card: 'intro', cap: 'A glass-box decision engine for students.' },
+        { dur: 4200, cap: 'A real crunch: <b>three urgent tasks</b>, limited energy, a close deadline.', do: () => { load('student'); scrollTop(); } },
+        { dur: 5200, cap: 'ProofPlan ranks the paths on <b>evidence</b> — transparent and editable. No black box.', do: () => spot('.proof-grid') },
+        { dur: 5200, cap: 'It prints a <b>Decision Receipt</b>: the path, why it wins, and today’s first move.', do: () => spot('#receiptCard') },
+        { dur: 4600, cap: 'Switching majors? ProofPlan spots a <b>one-way door</b> — hard to undo.', do: () => { load('major'); spot('#receiptCard'); } },
+        { dur: 5200, cap: 'So it changes posture: <span class="warn">VERIFY FIRST</span>. Slow down and prove it before you commit.', do: () => spot('#receiptDoor') },
+        { dur: 4800, cap: 'Every likely blocker becomes an <b>if-then plan</b> — shown to ~double follow-through.', do: () => spot('#obstacleList') },
+        { dur: 3600, card: 'outro', cap: 'ProofPlan · Decide. Prove it. Start today.' },
+      ];
+
+      function showCard(which) {
+        intro.classList.toggle('show', which === 'intro');
+        outro.classList.toggle('show', which === 'outro');
+      }
+
+      function runStep() {
+        if (paused) return;
+        const s = steps[idx];
+        showCard(s.card || null);
+        if (!s.card) clearSpot();
+        capText.innerHTML = s.cap;
+        stepDot.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(steps.length).padStart(2, '0');
+        // progress bar
+        progress.style.transition = 'none'; progress.style.width = '0%';
+        requestAnimationFrame(() => { progress.style.transition = 'width ' + s.dur + 'ms linear'; progress.style.width = '100%'; });
+        if (typeof s.do === 'function') setTimeout(s.do, 350);
+        timer = setTimeout(() => { idx = (idx + 1) % steps.length; runStep(); }, s.dur);
+      }
+
+      function start() {
+        clearTimeout(timer); idx = 0; paused = false; btnPause.textContent = '⏸ Pause';
+        try { win.ProofPlan.loadScenario('student'); } catch (e) {}
+        runStep();
+      }
+
+      // Manual (capture) mode — a conductor drives steps in sync with narration.
+      const __manual = new URLSearchParams(location.search).has('manual');
+      window.__demoSteps = steps.length;
+      window.__demoGoto = function (i, durMs) {
+        paused = true; clearTimeout(timer);
+        idx = ((i % steps.length) + steps.length) % steps.length;
+        const s = steps[idx];
+        showCard(s.card || null);
+        if (!s.card) clearSpot();
+        capText.innerHTML = s.cap;
+        stepDot.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(steps.length).padStart(2, '0');
+        progress.style.transition = 'none'; progress.style.width = '0%';
+        requestAnimationFrame(() => { progress.style.transition = 'width ' + (durMs || 3000) + 'ms linear'; progress.style.width = '100%'; });
+        if (typeof s.do === 'function') setTimeout(s.do, 250);
+      };
+
+      // Robust start: poll until the embedded app is fully ready (avoids the
+      // iframe-load-fired-before-listener race), then begin the tour.
+      (function whenReady(tries) {
+        tries = tries || 0;
+        let ready = false;
+        try { ready = !!(app.contentWindow && app.contentWindow.ProofPlan && app.contentDocument && app.contentDocument.readyState === 'complete'); } catch (e) {}
+        if (ready) {
+          win = app.contentWindow; doc = app.contentDocument || win.document;
+          injectSpotStyle();
+          if (__manual) {
+            const h = document.querySelector('.hint'); if (h) h.style.display = 'none';
+            const c = document.querySelector('.controls'); if (c) c.style.display = 'none';
+            window.__demoGoto(0, 3000);
+            window.__demoReady = true;
+          } else {
+            start();
+          }
+        } else if (tries < 80) {
+          setTimeout(() => whenReady(tries + 1), 150);
+        }
+      })();
+
+      btnReplay.addEventListener('click', start);
+      btnPause.addEventListener('click', () => {
+        paused = !paused;
+        if (paused) { clearTimeout(timer); btnPause.textContent = '▶ Resume'; const w = progress.style.width; progress.style.transition = 'none'; progress.style.width = w; }
+        else { btnPause.textContent = '⏸ Pause'; runStep(); }
+      });
+    </script>
+  </body>
+</html>

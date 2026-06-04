@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>ProofPlan — the glass-box decision engine for students</title>
+    <meta
+      name="description"
+      content="When everything feels urgent, ProofPlan tells you which path to start — and prints the proof. Compare options on evidence, see exactly why one wins, and leave with a Decision Receipt: first move, if-then fallback, and the one risk most likely to break the plan."
+    />
+    <meta name="theme-color" content="#f3efe6" />
+    <meta property="og:title" content="ProofPlan — Decide. Prove it. Start today." />
+    <meta
+      property="og:description"
+      content="A glass-box decision engine for students. Compare paths on evidence, classify the choice as a one-way or two-way door, and export a proof-backed Decision Receipt."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;450;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=editorial-20260603" />
+  </head>
+  <body>
+    <!-- icon sprite -->
+    <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+      <defs>
+        <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.6 5.2L19 10l-5.4 1.8L12 17l-1.6-5.2L5 10l5.4-1.8z" fill="currentColor"/><path d="M19 3.5l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1L16.2 6.3l2.1-.7z" fill="currentColor"/></symbol>
+        <symbol id="i-reset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+        <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M5 19h14"/></symbol>
+        <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5h6v2m-8 0l1 13h8l1-13"/></symbol>
+        <symbol id="i-door" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v17"/><path d="M3 21h16M19 21V8h2v13"/><circle cx="13" cy="12" r="1" fill="currentColor" stroke="none"/></symbol>
+        <symbol id="i-scope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="2.5"/></symbol>
+        <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 3 2 3H5"/></symbol>
+        <symbol id="i-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="9" r="2"/><path d="M6 7v10M6 12h6a4 4 0 0 0 4-4V11"/></symbol>
+        <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.5v.01"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></symbol>
+        <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M12 3v18M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+      </defs>
+    </svg>
+
+    <a class="skip-link" href="#workbench">Skip to the decision workbench</a>
+
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="wordmark" href="#top" id="top">
+          <span class="wordmark-mark" aria-hidden="true">▣</span>
+          <span class="wordmark-text">
+            ProofPlan
+            <small>DECISION&nbsp;ENGINE</small>
+          </span>
+        </a>
+        <div class="topbar-actions">
+          <span class="pill pill-quiet" title="Runs entirely in your browser. No account, no cloud.">
+            <svg class="ico" aria-hidden="true"><use href="#i-shield" /></svg>
+            Local-only
+          </span>
+          <button class="btn btn-ghost" type="button" id="loadDemo">
+            <svg class="ico" aria-hidden="true"><use href="#i-spark" /></svg>
+            Load demo
+          </button>
+          <button class="btn btn-ghost" type="button" id="resetBoard">
+            <svg class="ico" aria-hidden="true"><use href="#i-reset" /></svg>
+            Reset
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <p class="kicker kicker-accent">For the student staring at five urgent things</p>
+        <h1 id="hero-title" class="hero-title">
+          Stop guessing which task to start.<br />
+          <em>Decide it. Prove it. Print it.</em>
+        </h1>
+        <p class="hero-sub">
+          ProofPlan is a glass-box decision engine. Compare your real options on evidence, watch it
+          classify the choice as a <strong>two-way door</strong> (decide fast) or a
+          <strong>one-way door</strong> (slow down), and walk away with a
+          <strong>Decision Receipt</strong> — the chosen path, the first move for today, and an
+          if-then fallback for the one thing most likely to break it.
+        </p>
+        <div class="scenario-strip" role="group" aria-label="Load a sample decision">
+          <span class="scenario-label">Try a real one:</span>
+          <button class="chip" type="button" data-scenario="student">Study night crunch</button>
+          <button class="chip" type="button" data-scenario="team">Team due tomorrow</button>
+          <button class="chip" type="button" data-scenario="major">Switching majors</button>
+          <button class="chip" type="button" data-scenario="habit">Habit reset</button>
+        </div>
+      </div>
+    </section>
+
+    <main class="workbench" id="workbench">
+      <!-- LEFT: builder -->
+      <section class="builder" aria-label="Decision builder">
+        <form id="decisionForm" autocomplete="off">
+          <!-- step 1 -->
+          <article class="step">
+            <div class="step-rail"><span class="step-num">1</span></div>
+            <div class="step-body">
+              <header class="step-head">
+                <h2>Frame the decision</h2>
+                <p>One line a judge — or future-you — could understand in five seconds.</p>
+              </header>
+              <label class="field">
+                <span class="field-label">The decision</span>
+                <input id="goalInput" name="goal" type="text" placeholder="What should I actually start tonight?" />
+              </label>
+              <label class="field">
+                <span class="field-label">Why it matters <em>(stakes &amp; context)</em></span>
+                <textarea id="contextInput" name="context" rows="2" placeholder="Three things all feel urgent, I have limited energy, and the plan has to survive a busy week."></textarea>
+              </label>
+              <div class="field-row four">
+                <label class="field">
+                  <span class="field-label">Deadline</span>
+                  <input id="deadlineInput" name="deadline" type="date" />
+                </label>
+                <label class="field">
+                  <span class="field-label">Energy</span>
+                  <select id="energyInput" name="energy">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="field-label">Stakes</span>
+                  <select id="stakesInput" name="stakes">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="field-label">Time today</span>
+                  <select id="budgetInput" name="budget">
+                    <option value="45">45 min</option>
+                    <option value="90" selected>90 min</option>
+                    <option value="150">150 min</option>
+                    <option value="240">4 hours</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <!-- step 2 -->
+          <article class="step">
+            <div class="step-rail"><span class="step-num">2</span></div>
+            <div class="step-body">
+              <header class="step-head with-action">
+                <div>
+                  <h2>Compare the paths</h2>
+                  <p>Score each path, then attach the evidence that makes it believable — not a vibe.</p>
+                </div>
+                <button class="icon-btn" type="button" id="addOption" aria-label="Add a path">
+                  <svg class="ico" aria-hidden="true"><use href="#i-plus" /></svg>
+                </button>
+              </header>
+              <div class="scale-legend" aria-hidden="true">
+                <span><b>Impact</b> payoff if it works</span>
+                <span><b>Confidence</b> belief it works</span>
+                <span><b>Effort</b> cost to do</span>
+                <span><b>Reversible</b> easy to undo?</span>
+              </div>
+              <div id="optionsList" class="option-list" aria-live="polite"></div>
+            </div>
+          </article>
+
+          <!-- step 3 -->
+          <article class="step">
+            <div class="step-rail"><span class="step-num">3</span></div>
+            <div class="step-body">
+              <header class="step-head with-action">
+                <div>
+                  <h2>Run a premortem</h2>
+                  <p>It's a week later and the plan failed. Name what killed it — then pre-decide the fix.
+                    <a class="cite" href="#evidence">if-then plans ↗ 91% vs 39%</a></p>
+                </div>
+                <button class="icon-btn" type="button" id="addObstacle" aria-label="Add a blocker">
+                  <svg class="ico" aria-hidden="true"><use href="#i-plus" /></svg>
+                </button>
+              </header>
+              <div id="obstacleList" class="obstacle-list" aria-live="polite"></div>
+            </div>
+          </article>
+
+          <div class="builder-actions">
+            <button class="btn btn-solid" type="button" id="saveDecision">
+              <svg class="ico" aria-hidden="true"><use href="#i-save" /></svg>
+              Save decision
+            </button>
+            <button class="btn btn-line" type="button" id="copySummary">
+              <svg class="ico" aria-hidden="true"><use href="#i-copy" /></svg>
+              Copy summary
+            </button>
+            <button class="btn btn-line" type="button" id="downloadReceipt">
+              <svg class="ico" aria-hidden="true"><use href="#i-download" /></svg>
+              Export receipt PNG
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- RIGHT: live receipt -->
+      <aside class="receipt-rail" aria-label="Decision receipt">
+        <div class="receipt-sticky">
+          <div class="receipt" id="receiptCard">
+            <div class="receipt-perf top" aria-hidden="true"></div>
+            <div class="receipt-inner">
+              <div class="receipt-head">
+                <div>
+                  <p class="receipt-brand">ProofPlan</p>
+                  <p class="receipt-sub">DECISION RECEIPT</p>
+                </div>
+                <div class="receipt-fit">
+                  <span class="receipt-fit-num" id="receiptConfidence">—</span>
+                  <span class="receipt-fit-label">FIT</span>
+                </div>
+              </div>
+
+              <div class="receipt-stamp" id="receiptStamp" data-state="empty">
+                <span id="receiptStampText">AWAITING&nbsp;PATHS</span>
+              </div>
+
+              <dl class="receipt-lines">
+                <div class="receipt-line">
+                  <dt>Start with</dt>
+                  <dd id="receiptChoice" class="receipt-choice">Add two paths to generate a recommendation.</dd>
+                </div>
+                <div class="receipt-rule" aria-hidden="true"></div>
+                <div class="receipt-line">
+                  <dt>Door type</dt>
+                  <dd id="receiptDoor" class="receipt-door">—</dd>
+                </div>
+                <div class="receipt-line">
+                  <dt>Why it wins</dt>
+                  <dd id="receiptWhy">—</dd>
+                </div>
+                <div class="receipt-rule" aria-hidden="true"></div>
+                <div class="receipt-line">
+                  <dt>First move · today</dt>
+                  <dd id="receiptFirstMove">—</dd>
+                </div>
+                <div class="receipt-line">
+                  <dt>If-then fallback</dt>
+                  <dd id="receiptFallback">—</dd>
+                </div>
+                <div class="receipt-line">
+                  <dt>Watch-out</dt>
+                  <dd id="receiptWatchout">—</dd>
+                </div>
+              </dl>
+
+              <div class="receipt-meters" aria-label="Decision metrics">
+                <div class="meter">
+                  <span class="meter-top"><span>Clarity</span><b id="clarityMetric">0</b></span>
+                  <span class="meter-track"><i id="clarityBar" style="width:0%"></i></span>
+                </div>
+                <div class="meter">
+                  <span class="meter-top"><span>Proof</span><b id="proofMetric">0</b></span>
+                  <span class="meter-track"><i id="proofBar" style="width:0%"></i></span>
+                </div>
+                <div class="meter">
+                  <span class="meter-top"><span>Risk</span><b id="riskMetric">0</b></span>
+                  <span class="meter-track risk"><i id="riskBar" style="width:0%"></i></span>
+                </div>
+              </div>
+
+              <p class="receipt-foot">
+                <span>Generated locally · no account · no cloud</span>
+                <span class="receipt-foot-tag">PROOF·PLAN·PROOF·PLAN</span>
+              </p>
+            </div>
+            <div class="receipt-perf bottom" aria-hidden="true"></div>
+          </div>
+
+          <div class="receipt-export" id="receiptExportPanel" hidden>
+            <div class="receipt-export-head">
+              <span>PNG ready to share</span>
+              <a id="receiptDownloadLink" class="btn btn-mini" href="#" download="proofplan-receipt.png">Download</a>
+            </div>
+            <img id="receiptPreview" alt="Exported ProofPlan decision receipt" />
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- proof board -->
+    <section class="proofboard" aria-labelledby="proof-title">
+      <div class="section-head">
+        <p class="kicker kicker-accent">The glass box</p>
+        <h2 id="proof-title">No black box. Here's exactly why that path wins.</h2>
+      </div>
+
+      <div class="proof-grid">
+        <figure class="matrix-card">
+          <figcaption>
+            <span class="column-title"><svg class="ico" aria-hidden="true"><use href="#i-grid" /></svg> Effort × Payoff map</span>
+            <span class="matrix-hint">Bubble size = fit · numbers match the ranked paths → · top-left is the sweet spot.</span>
+          </figcaption>
+          <div class="matrix-wrap">
+            <canvas id="scoreCanvas" width="720" height="440" role="img" aria-label="A 2x2 map plotting each path by effort and payoff"></canvas>
+          </div>
+        </figure>
+
+        <div class="ranked-card">
+          <div class="column-title"><svg class="ico" aria-hidden="true"><use href="#i-flag" /></svg> Ranked paths</div>
+          <div id="rankedOptions" class="ranked-list"></div>
+          <details class="scoring-note">
+            <summary>How the score is computed (it's editable)</summary>
+            <p>
+              A transparent weighted matrix — no AI guess. Each path earns:
+              <b>Impact ×30%</b>, <b>Confidence ×20%</b>, <b>Feasibility ×20%</b>
+              (effort vs. your energy), <b>Reversibility ×15%</b>, <b>Evidence ×15%</b>,
+              then a deadline-urgency nudge. Change any input and the ranking updates live — you can
+              see and challenge every number.
+            </p>
+          </details>
+        </div>
+      </div>
+
+      <div class="checks-card">
+        <div class="column-title"><svg class="ico" aria-hidden="true"><use href="#i-alert" /></svg> Plan checks</div>
+        <div id="checkList" class="check-list"></div>
+      </div>
+    </section>
+
+    <!-- plan + fallback -->
+    <section class="planboard" aria-label="Today plan and fallbacks">
+      <div class="plan-col">
+        <div class="column-title"><svg class="ico" aria-hidden="true"><use href="#i-arrow" /></svg> Do this today</div>
+        <ol id="todayPlan" class="today-plan"></ol>
+      </div>
+      <div class="plan-col">
+        <div class="column-title"><svg class="ico" aria-hidden="true"><use href="#i-branch" /></svg> If-then fallbacks</div>
+        <div id="fallbackPlan" class="fallback-plan"></div>
+      </div>
+    </section>
+
+    <!-- archive + summary -->
+    <section class="archive" aria-label="Decision journal">
+      <div class="archive-col">
+        <div class="archive-head">
+          <div class="column-title"><svg class="ico" aria-hidden="true"><use href="#i-save" /></svg> Decision journal <span class="muted-tag">saved in this browser</span></div>
+          <button class="icon-btn" type="button" id="clearSaved" aria-label="Clear saved decisions">
+            <svg class="ico" aria-hidden="true"><use href="#i-trash" /></svg>
+          </button>
+        </div>
+        <div id="savedDecisions" class="saved-list"></div>
+      </div>
+      <label class="archive-col field">
+        <span class="column-title">Copyable note <span class="muted-tag">for your journal, a teammate, or the write-up</span></span>
+        <textarea id="summaryOutput" readonly rows="9"></textarea>
+      </label>
+    </section>
+
+    <!-- evidence / credibility -->
+    <section class="evidence" id="evidence" aria-labelledby="evidence-title">
+      <div class="section-head">
+        <p class="kicker kicker-accent">Why this works</p>
+        <h2 id="evidence-title">Built on decision science, not productivity theater.</h2>
+      </div>
+      <div class="evidence-grid">
+        <article class="evidence-card">
+          <h3>Two-way vs. one-way doors</h3>
+          <p>ProofPlan classifies your choice by reversibility. Reversible "two-way door" calls should be made fast at ~70% certainty; irreversible "one-way doors" deserve a slower, evidence-heavy process.</p>
+          <span class="evidence-src">Bezos, Amazon shareholder letters</span>
+        </article>
+        <article class="evidence-card">
+          <h3>The premortem</h3>
+          <p>Imagining a decision has already failed helps people identify ~30% more reasons it could go wrong than asking "what might go wrong." That's why step 3 assumes failure first.</p>
+          <span class="evidence-src">Premortem: Klein, HBR (2007) · 30% figure: Mitchell, Russo &amp; Pennington (1989)</span>
+        </article>
+        <article class="evidence-card">
+          <h3>If-then implementation intentions</h3>
+          <p>Pre-deciding "if X happens, then I'll do Y" roughly doubles follow-through. In one study, gym attendance jumped from 39% to 91% with a single if-then plan; a 94-study meta-analysis found a medium-to-large effect.</p>
+          <span class="evidence-src">Gollwitzer &amp; Sheeran (2006); Milne, Orbell &amp; Sheeran (2002)</span>
+        </article>
+        <article class="evidence-card">
+          <h3>Glass-box weighting</h3>
+          <p>Forcing the trade-off weights to be explicit beats gut feel on multi-option choices — and unlike an AI suggestion, every number here is visible and editable.</p>
+          <span class="evidence-src">Weighted decision matrix · decision hygiene, Kahneman, Sibony &amp; Sunstein, "Noise" (2021)</span>
+        </article>
+      </div>
+    </section>
+
+    <footer class="site-foot">
+      <p><strong>ProofPlan</strong> · Decide. Prove it. Start today.</p>
+      <p class="muted">A Design4Future submission. Runs 100% in your browser — open <code>index.html</code> or serve the folder. No tracking, no account, no cloud.</p>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script src="./app.js?v=editorial-20260603"></script>
+  </body>
+</html>

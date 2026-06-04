@@ -1,0 +1,58 @@
+# =====================================================================
+# ProofPlan — keep the PUBLIC repo to the app + current docs + 2 receipts
+# Everything below stays on your disk but is kept OUT of the published repo.
+# (Already-committed? run the `git rm --cached` block in SUBMIT_RUNBOOK.md.)
+# =====================================================================
+
+# --- stale media from the PREVIOUS design (re-shoot before relying on these) ---
+proofplan-browser-*.png
+proofplan-desktop-qa.png
+proofplan-local-deps-qa.png
+proofplan-export-preview-qa.png
+proofplan-mobile-qa.png
+proofplan-redesign-*.png
+proofplan-judge-receipt.png
+proofplan-judge-mobile.png
+proofplan-demo-recorder.png
+proofplan-demo-video.webm
+proofplan-demo-pitch-deck.pptx
+proofplan-submission-package.zip
+outputs/
+
+# --- internal strategy notes (unverified competitor counts / old self-scores) ---
+COMPETITION_AUDIT.md
+judge-audit.md
+FINAL_GATE_STATUS.md
+FINAL_SUBMISSION_AUDIT.md
+pre-submit-checklist.md
+GITHUB_PUBLISH_STEPS.md
+VIDEO_UPLOAD_HANDOFF.md
+design-notes.md
+research.md
+start.md
+STATUS.md
+JUDGE_BRIEF.md
+SUBMIT_RUNBOOK.md
+DEVPOST_FIELDS.md
+submission.md
+demo-script.md
+
+# --- old demo tooling (previous design) ---
+demo-recorder.html
+demo-video-maker.html
+devpost-handoff.html
+
+# --- Node-based QA (no Node in this environment; superseded) ---
+qa-check.mjs
+final-qa.mjs
+external-link-check.mjs
+video-playback-check.mjs
+package.json
+.github/
+
+# --- unused vendor (icons are inline SVG now) ---
+vendor/
+
+# --- os / scratch ---
+.DS_Store
+.cache/
