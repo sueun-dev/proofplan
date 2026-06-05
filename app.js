@@ -142,10 +142,10 @@ function cacheEls() {
 let current = structuredClone(demoDecision);
 
 /* ---------------------------------------------------------------- templates */
-function selectField(label, className, value, accent) {
+function selectField(label, className, value) {
   const options = [1, 2, 3, 4, 5]
     .map((s) => `<option value="${s}" ${Number(value) === s ? "selected" : ""}>${s}</option>`).join("");
-  return `<label class="tiny-field"><span>${accent ? `<b>${label}</b>` : label}</span><select class="${className}">${options}</select></label>`;
+  return `<label class="tiny-field"><span>${label}</span><select class="${className}">${options}</select></label>`;
 }
 
 function optionRow(option, index) {
@@ -409,6 +409,14 @@ function buildSummary(decision, ranked, checks, plan, door, metrics) {
 /* ---------------------------------------------------------------- render */
 function setText(el, text) { if (el) el.textContent = text; }
 
+/* single source of truth for the approval stamp shown in the live receipt
+   and burned into the exported PNG */
+const STAMP_TEXT = { empty: "AWAITING PATHS", go: "RECOMMENDED", caution: "VERIFY FIRST" };
+const STAMP_COLOR = { empty: "#a59c8b", go: "#137a4f", caution: "#b8721a" };
+function stampState(analysis) {
+  return analysis.top ? analysis.receipt.doorState : "empty";
+}
+
 function renderOutputs(analysis) {
   const r = analysis.receipt;
 
@@ -434,10 +442,9 @@ function renderOutputs(analysis) {
     : "—";
   els.receiptDoor.className = "receipt-door " + (r.doorState === "go" ? "go" : r.doorState === "caution" ? "caution" : "");
 
-  const stampMap = { empty: "AWAITING PATHS", go: "RECOMMENDED", caution: "VERIFY FIRST" };
-  const stampState = analysis.top ? r.doorState : "empty";
-  els.receiptStamp.dataset.state = stampState;
-  setText(els.receiptStampText, stampMap[stampState] || "AWAITING PATHS");
+  const state = stampState(analysis);
+  els.receiptStamp.dataset.state = state;
+  setText(els.receiptStampText, STAMP_TEXT[state] || STAMP_TEXT.empty);
 
   // meters
   setText(els.clarityMetric, analysis.clarity);
@@ -630,8 +637,9 @@ function buildReceiptCanvas(analysis) {
   ctx.fillStyle = "#17150f"; ctx.fillRect(P, 168, W - P * 2, 4);
 
   // stamp
-  const stampText = analysis.top ? (r.doorState === "caution" ? "VERIFY FIRST" : "RECOMMENDED") : "AWAITING PATHS";
-  const stampColor = r.doorState === "caution" ? "#b8721a" : analysis.top ? "#137a4f" : "#a59c8b";
+  const state = stampState(analysis);
+  const stampText = STAMP_TEXT[state];
+  const stampColor = STAMP_COLOR[state];
   ctx.save(); ctx.translate(W - 250, 250); ctx.rotate(-0.06);
   ctx.strokeStyle = stampColor; ctx.lineWidth = 4; ctx.fillStyle = stampColor;
   ctx.font = `700 30px ${mono}`; const sw = ctx.measureText(stampText).width;
@@ -723,9 +731,11 @@ function toast(msg) {
 }
 
 /* ---------------------------------------------------------------- orchestration */
+let lastAnalysis = null;
 function updateAll() {
   current = collectDecision();
   const analysis = analyze(current);
+  lastAnalysis = analysis;
   renderOutputs(analysis);
   return analysis;
 }
@@ -794,7 +804,12 @@ function wire() {
   els.clearSaved.addEventListener("click", () => { writeSaved([]); renderSaved(); toast("Cleared saved decisions."); });
 
   let resizeTimer = null;
-  window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => drawMatrix(analyze(current)), 150); });
+  // a pure resize doesn't change the inputs, so redraw from the cached analysis
+  // instead of re-running the full scoring/receipt/summary pipeline
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (lastAnalysis) drawMatrix(lastAnalysis); }, 150);
+  });
 }
 
 /* expose a tiny API for automated QA / screenshots */
