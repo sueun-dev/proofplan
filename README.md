@@ -80,6 +80,6 @@ The brief asks for a practical tool that helps people stay organized, productive
 
 100% local. Decisions live in your browser's `localStorage` and never leave the device. There's no account, no analytics, and no network calls except loading web fonts.
 
----
+## License
 
-*Submission files: paste-ready Devpost copy in [`DEVPOST_FIELDS.md`](./DEVPOST_FIELDS.md) · final submit steps in [`SUBMIT_RUNBOOK.md`](./SUBMIT_RUNBOOK.md) · rubric mapping in [`JUDGE_BRIEF.md`](./JUDGE_BRIEF.md).*
+Released under the [MIT License](./LICENSE).
